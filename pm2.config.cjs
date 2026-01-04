@@ -4,6 +4,7 @@ module.exports = {
 			name: 'beancode-telegram-bot',
 			script: 'index.js',
 			instances: 1,
+			exec_mode: 'fork', // Явно указываем fork режим (не cluster)
 			autorestart: true,
 			watch: false,
 			max_memory_restart: '200M',
