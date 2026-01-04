@@ -3,19 +3,22 @@ const handleStart = async (bot, msg) => {
   const welcomeMessage = `
 🤖 <b>Добро пожаловать в бот управления заказами!</b>
 
-Выберите действие:
+Используйте кнопки ниже для управления заказами.
   `.trim();
 
+  // Reply keyboard (постоянная клавиатура внизу)
   const keyboard = {
-    inline_keyboard: [
+    keyboard: [
       [
-        { text: '📦 Все заказы', callback_data: 'filter_all' },
+        { text: '📦 Все заказы' },
       ],
       [
-        { text: '✅ Отправленные', callback_data: 'filter_sent' },
-        { text: '⏳ Не отправленные', callback_data: 'filter_not_sent' },
+        { text: '✅ Отправленные' },
+        { text: '⏳ Не отправленные' },
       ],
     ],
+    resize_keyboard: true,
+    one_time_keyboard: false,
   };
 
   await bot.sendMessage(chatId, welcomeMessage, {

@@ -9,17 +9,19 @@ const sendOrdersList = async (bot, chatId, status = null, limit = 50) => {
       return bot.sendMessage(chatId, `📭 Нет ${statusText} заказов`);
     }
     
-    // Отправляем сообщение с кнопками фильтрации
+    // Reply keyboard (постоянная клавиатура внизу)
     const filterKeyboard = {
-      inline_keyboard: [
+      keyboard: [
         [
-          { text: '📦 Все заказы', callback_data: 'filter_all' },
+          { text: '📦 Все заказы' },
         ],
         [
-          { text: '✅ Отправленные', callback_data: 'filter_sent' },
-          { text: '⏳ Не отправленные', callback_data: 'filter_not_sent' },
+          { text: '✅ Отправленные' },
+          { text: '⏳ Не отправленные' },
         ],
       ],
+      resize_keyboard: true,
+      one_time_keyboard: false,
     };
     
     const statusLabel = status === 'sent' ? '✅ Отправленные' : status === 'not_sent' ? '⏳ Не отправленные' : '📦 Все заказы';

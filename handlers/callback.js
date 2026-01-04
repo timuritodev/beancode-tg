@@ -1,5 +1,4 @@
 const { updateOrderStatus, getOrderById } = require('../utils/db');
-const { sendOrdersList } = require('../commands/orders');
 
 const handleStatusCallback = async (bot, query) => {
 	try {
@@ -70,33 +69,6 @@ ${statusEmoji} Статус: ${newStatus === 'sent' ? 'Отправлен' : 'Н
 					show_alert: true,
 				});
 			}
-		} else if (data.startsWith('filter_')) {
-			// Обработка фильтров
-			let status = null;
-			let statusText = 'Все заказы';
-
-			if (data === 'filter_sent') {
-				status = 'sent';
-				statusText = 'Отправленные заказы';
-			} else if (data === 'filter_not_sent') {
-				status = 'not_sent';
-				statusText = 'Не отправленные заказы';
-			}
-
-			await bot.answerCallbackQuery(query.id, {
-				text: `Загружаю ${statusText.toLowerCase()}...`,
-				show_alert: false,
-			});
-
-			// Удаляем старое сообщение с кнопками
-			try {
-				await bot.deleteMessage(chatId, query.message.message_id);
-			} catch (error) {
-				// Игнорируем ошибку, если сообщение уже удалено
-			}
-
-			// Отправляем отфильтрованные заказы
-			await sendOrdersList(bot, chatId, status);
 		}
 	} catch (error) {
 		console.error('Error in handleStatusCallback:', error);

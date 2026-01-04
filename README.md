@@ -16,12 +16,19 @@ npm install
 TELEGRAM_BOT_TOKEN=8467958051:AAFowKvqv-ydHJuWh6BqQBAKSrsgzR3ruFE
 TELEGRAM_CHAT_ID=320700693
 
+# Защита бота - список разрешенных Chat ID (через запятую)
+# Если не указан, будет использован TELEGRAM_CHAT_ID
+ALLOWED_CHAT_IDS=320700693
+# Можно указать несколько: ALLOWED_CHAT_IDS=320700693,123456789,987654321
+
 # Database configuration
 DB_HOST=127.0.0.1
 DB_USER=root
 DB_PASSWORD=timur2003
 DB_NAME=coffee
 ```
+
+**Важно:** Добавьте свой Chat ID в `ALLOWED_CHAT_IDS` для доступа к боту. Можно указать несколько через запятую: `ALLOWED_CHAT_IDS=320700693,123456789`
 
 ## Запуск
 
