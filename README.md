@@ -5,11 +5,13 @@ Telegram бот для управления заказами.
 ## Установка
 
 1. Установите зависимости:
+
 ```bash
 npm install
 ```
 
 2. Создайте файл `.env` в корне проекта со следующим содержимым:
+
 ```
 TELEGRAM_BOT_TOKEN=8467958051:AAFowKvqv-ydHJuWh6BqQBAKSrsgzR3ruFE
 TELEGRAM_CHAT_ID=320700693
@@ -24,20 +26,32 @@ DB_NAME=coffee
 ## Запуск
 
 ### Режим разработки:
+
 ```bash
 npm run dev
 ```
 
 ### Продакшн:
+
 ```bash
 npm start
 ```
 
-### С PM2:
+### С PM2 (локально):
+
 ```bash
 pm2 start index.js --name telegram-bot
 pm2 save
 ```
+
+### С PM2 (продакшен):
+
+```bash
+pm2 start pm2.config.cjs
+pm2 save
+```
+
+**Подробная инструкция по деплою:** см. [DEPLOY.md](./DEPLOY.md)
 
 ## Команды бота
 
@@ -59,4 +73,3 @@ beancode-tg/
 └── utils/
     └── db.js         # Работа с базой данных
 ```
-
