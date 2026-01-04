@@ -6,19 +6,15 @@ require('dotenv').config();
  * @returns {boolean} - true если доступ разрешен
  */
 const isAuthorized = (chatId) => {
-	let allowedChatIds = process.env.ALLOWED_CHAT_IDS;
+	if (!chatId) {
+		return false;
+	}
 
-	// Если ALLOWED_CHAT_IDS не указан, используем TELEGRAM_CHAT_ID как дефолтный
+	const allowedChatIds = process.env.ALLOWED_CHAT_IDS;
+
 	if (!allowedChatIds) {
-		allowedChatIds = process.env.TELEGRAM_CHAT_ID;
-
-		if (!allowedChatIds) {
-			// Если и TELEGRAM_CHAT_ID нет, разрешаем всем (небезопасно!)
-			console.warn(
-				'⚠️  ALLOWED_CHAT_IDS and TELEGRAM_CHAT_ID not set, allowing all users'
-			);
-			return true;
-		}
+		console.warn('⚠️  ALLOWED_CHAT_IDS not set, denying access');
+		return false;
 	}
 
 	const allowedIds = allowedChatIds.split(',').map((id) => id.trim());

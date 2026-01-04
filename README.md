@@ -14,10 +14,8 @@ npm install
 
 ```
 TELEGRAM_BOT_TOKEN=8467958051:AAFowKvqv-ydHJuWh6BqQBAKSrsgzR3ruFE
-TELEGRAM_CHAT_ID=320700693
 
-# Защита бота - список разрешенных Chat ID (через запятую)
-# Если не указан, будет использован TELEGRAM_CHAT_ID
+# Защита бота - список разрешенных Chat ID (через запятую, ОБЯЗАТЕЛЬНО!)
 ALLOWED_CHAT_IDS=320700693
 # Можно указать несколько: ALLOWED_CHAT_IDS=320700693,123456789,987654321
 

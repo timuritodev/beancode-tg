@@ -10,15 +10,10 @@ const sendOrdersList = async (bot, chatId, status = null, limit = 50) => {
     }
     
     // Reply keyboard (постоянная клавиатура внизу)
-    const filterKeyboard = {
+    const replyMarkup = {
       keyboard: [
-        [
-          { text: '📦 Все заказы' },
-        ],
-        [
-          { text: '✅ Отправленные' },
-          { text: '⏳ Не отправленные' },
-        ],
+        [{ text: '📦 Все заказы' }],
+        [{ text: '✅ Отправленные' }, { text: '⏳ Не отправленные' }],
       ],
       resize_keyboard: true,
       one_time_keyboard: false,
@@ -26,7 +21,7 @@ const sendOrdersList = async (bot, chatId, status = null, limit = 50) => {
     
     const statusLabel = status === 'sent' ? '✅ Отправленные' : status === 'not_sent' ? '⏳ Не отправленные' : '📦 Все заказы';
     await bot.sendMessage(chatId, `${statusLabel} (найдено: ${orders.length}):`, {
-      reply_markup: filterKeyboard,
+      reply_markup: replyMarkup,
     });
     
     // Отправляем каждый заказ
@@ -43,7 +38,7 @@ ${statusEmoji} Статус: ${order.status === 'sent' ? 'Отправлен' : 
 <i>ID: ${order.id}</i>
       `.trim();
       
-      const keyboard = {
+      const inlineKeyboard = {
         inline_keyboard: [[
           {
             text: order.status === 'sent' ? '✅ Отправлен' : '⏳ Не отправлен',
@@ -54,9 +49,14 @@ ${statusEmoji} Статус: ${order.status === 'sent' ? 'Отправлен' : 
       
       await bot.sendMessage(chatId, message, {
         parse_mode: 'HTML',
-        reply_markup: keyboard
+        reply_markup: inlineKeyboard
       });
     }
+    
+    // Отправляем reply keyboard в конце, чтобы она осталась видимой
+    await bot.sendMessage(chatId, '👇 Используйте кнопки ниже:', {
+      reply_markup: replyMarkup,
+    });
   } catch (error) {
     console.error('Error in sendOrdersList:', error);
     bot.sendMessage(chatId, '❌ Ошибка при получении заказов');
