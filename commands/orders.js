@@ -1,12 +1,28 @@
 const { getRecentOrders } = require('../utils/db');
 
-const sendOrdersList = async (bot, chatId, status = null, limit = 50) => {
+/**
+ * Отправка списка заказов
+ * @param {Object} bot - Экземпляр бота
+ * @param {number} chatId - ID чата
+ * @param {string|null} status - Статус заказа ('sent' или 'not_sent')
+ * @param {string|null} period - Период для выполненных заказов: 'day', 'week', 'month', 'year', null
+ */
+const sendOrdersList = async (bot, chatId, status = null, period = null) => {
   try {
-    const orders = await getRecentOrders(limit, status);
+    // Для невыполненных заказов - без лимита (все с начала деятельности)
+    // Для выполненных заказов - по умолчанию месяц, если период не указан
+    const limit = status === 'not_sent' ? null : 1000; // Большой лимит для выполненных
+    const actualPeriod = status === 'sent' && !period ? 'month' : period;
+    
+    const orders = await getRecentOrders(limit, status, actualPeriod);
     
     if (orders.length === 0) {
       const statusText = status === 'sent' ? 'отправленных' : status === 'not_sent' ? 'не отправленных' : '';
-      return bot.sendMessage(chatId, `📭 Нет ${statusText} заказов`);
+      const periodText = actualPeriod === 'day' ? ' за день' : 
+                         actualPeriod === 'week' ? ' за неделю' : 
+                         actualPeriod === 'month' ? ' за месяц' : 
+                         actualPeriod === 'year' ? ' с начала года' : '';
+      return bot.sendMessage(chatId, `📭 Нет ${statusText} заказов${periodText}`);
     }
     
     // Reply keyboard (постоянная клавиатура внизу)
@@ -19,10 +35,46 @@ const sendOrdersList = async (bot, chatId, status = null, limit = 50) => {
       one_time_keyboard: false,
     };
     
-    const statusLabel = status === 'sent' ? '✅ Отправленные' : status === 'not_sent' ? '⏳ Не отправленные' : '📦 Все заказы';
+    // Формируем заголовок с информацией о периоде
+    let statusLabel = status === 'sent' ? '✅ Отправленные' : status === 'not_sent' ? '⏳ Не отправленные' : '📦 Все заказы';
+    if (status === 'sent' && actualPeriod) {
+      const periodLabels = {
+        'day': ' (за день)',
+        'week': ' (за неделю)',
+        'month': ' (за месяц)',
+        'year': ' (с начала года)'
+      };
+      statusLabel += periodLabels[actualPeriod] || '';
+    }
+    
+    // Для выполненных заказов добавляем inline кнопки выбора периода
+    let inlineKeyboard = null;
+    if (status === 'sent') {
+      inlineKeyboard = {
+        inline_keyboard: [
+          [
+            { text: '📅 День', callback_data: 'filter_sent_day' },
+            { text: '📅 Неделя', callback_data: 'filter_sent_week' },
+          ],
+          [
+            { text: '📅 Месяц', callback_data: 'filter_sent_month' },
+            { text: '📅 Год', callback_data: 'filter_sent_year' },
+          ]
+        ]
+      };
+    }
+    
     await bot.sendMessage(chatId, `${statusLabel} (найдено: ${orders.length}):`, {
       reply_markup: replyMarkup,
+      ...(inlineKeyboard && { parse_mode: 'HTML' })
     });
+    
+    // Если есть inline кнопки, отправляем их отдельным сообщением
+    if (inlineKeyboard) {
+      await bot.sendMessage(chatId, '📅 Выберите период:', {
+        reply_markup: inlineKeyboard
+      });
+    }
     
     // Отправляем каждый заказ
     for (const order of orders) {
@@ -52,11 +104,6 @@ ${statusEmoji} Статус: ${order.status === 'sent' ? 'Отправлен' : 
         reply_markup: inlineKeyboard
       });
     }
-    
-    // Отправляем reply keyboard в конце, чтобы она осталась видимой
-    await bot.sendMessage(chatId, '👇 Используйте кнопки ниже:', {
-      reply_markup: replyMarkup,
-    });
   } catch (error) {
     console.error('Error in sendOrdersList:', error);
     bot.sendMessage(chatId, '❌ Ошибка при получении заказов');

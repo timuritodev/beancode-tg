@@ -1,4 +1,5 @@
 const { updateOrderStatus, getOrderById } = require('../utils/db');
+const { sendOrdersList } = require('../commands/orders');
 
 const handleStatusCallback = async (bot, query) => {
 	try {
@@ -9,6 +10,17 @@ const handleStatusCallback = async (bot, query) => {
 
 		const chatId = query.message.chat.id;
 		const data = query.data;
+
+		// Обработка фильтров периода для выполненных заказов
+		if (data.startsWith('filter_sent_')) {
+			const period = data.replace('filter_sent_', '');
+			await bot.answerCallbackQuery(query.id, {
+				text: `Показываю заказы за выбранный период`,
+				show_alert: false,
+			});
+			await sendOrdersList(bot, chatId, 'sent', period);
+			return;
+		}
 
 		if (data.startsWith('toggle_status_')) {
 			const orderId = parseInt(data.replace('toggle_status_', ''));
