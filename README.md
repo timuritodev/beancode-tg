@@ -13,20 +13,21 @@ npm install
 2. Создайте файл `.env` в корне проекта со следующим содержимым:
 
 ```
-TELEGRAM_BOT_TOKEN=8467958051:AAFowKvqv-ydHJuWh6BqQBAKSrsgzR3ruFE
+# Токен бота из @BotFather
+TELEGRAM_BOT_TOKEN=<your_telegram_bot_token>
 
 # Защита бота - список разрешенных Chat ID (через запятую, ОБЯЗАТЕЛЬНО!)
-ALLOWED_CHAT_IDS=320700693
-# Можно указать несколько: ALLOWED_CHAT_IDS=320700693,123456789,987654321
+ALLOWED_CHAT_IDS=<your_chat_id>
+# Можно указать несколько: ALLOWED_CHAT_IDS=<id1>,<id2>,<id3>
 
 # Database configuration
 DB_HOST=127.0.0.1
-DB_USER=root
-DB_PASSWORD=timur2003
+DB_USER=<db_user>
+DB_PASSWORD=<db_password>
 DB_NAME=coffee
 ```
 
-**Важно:** Добавьте свой Chat ID в `ALLOWED_CHAT_IDS` для доступа к боту. Можно указать несколько через запятую: `ALLOWED_CHAT_IDS=320700693,123456789`
+**Важно:** Добавьте свой Chat ID в `ALLOWED_CHAT_IDS` для доступа к боту. Можно указать несколько через запятую: `ALLOWED_CHAT_IDS=<id1>,<id2>`
 
 ## Запуск
 
